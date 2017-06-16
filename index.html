@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>unicode-rate</title>
+    <meta name="description" content="Demo for a talk">
+    <meta name="theme-color" content="#673AB7">
+
+    <!-- See https://goo.gl/OOhYW5 -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" sizes="192x192" href="icons/icon-192x192.png">
+
+    <style>
+      * { margin: 0; padding: 0; }
+      html, body { height: 100%; }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #512DA8;
+      }
+
+      h1 {
+        color: #ede7f6;
+        margin-bottom: 20px;
+        font-family: menlo, consolas, monospace;
+        font-size: 24px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+      }
+    </style>
+
+    <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+
+    <link rel="import" href="/src/unicode-rate-app/unicode-rate-app.html">
+  </head>
+  <body>
+    <h1>Let's Rate</h1>
+    <unicode-rate-app items-count="10"></unicode-rate-app>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+            // Registration was successful
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          }, function(err) {
+            // registration failed :(
+            console.log('ServiceWorker registration failed: ', err);
+          });
+        });
+      }
+    </script>
+
+    <noscript>
+      <p>🚧 js is disabled...</p>
+    </noscript>
+  </body>
+</html>

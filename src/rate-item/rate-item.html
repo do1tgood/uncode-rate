@@ -1,0 +1,71 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<!-- 
+  '<rate-item>' is a simple icon that can be used with '<unicode-rate>' component
+  `rate-item`
+  A simple icon which changes it&#39;s state after click/tap and fires custom event
+  *
+  @customElement
+  @polymer
+  @demo demo/index.html
+-->
+
+<dom-module id="rate-item">
+  <template>
+    <style>
+      :host {
+        display: block;
+        font-size: 32px;
+        padding: 2px;
+      }
+    </style>
+    <span>[[icon]]</span>
+  </template>
+
+  <script>
+    class RateItem extends Polymer.Element {
+      static get is() { return 'rate-item'; }
+      static get properties() {
+        return {
+          rateIndex: {
+            type: Number,
+            value: 0
+          },
+          selectedIcon: {
+            type: String,
+            value: "★"
+          },
+          unselectedIcon: {
+            type: String,
+            value: "☆"
+          },
+          isSelected: {
+            type: Boolean,
+            value: false
+          },
+          icon: {
+            type: String,
+            computed: "_computeIcon(isSelected)"
+          }
+        };
+      }
+
+      ready() {
+        super.ready();
+        this.addEventListener("click", function() {
+          const event = new CustomEvent('do-rate', {
+            bubbles: true, composed: true,
+            detail: { rateIndex: this.rateIndex }
+          });
+
+          this.dispatchEvent(event);
+        });
+      }
+
+      _computeIcon(isSelected) {
+        return isSelected ? this.selectedIcon : this.unselectedIcon;
+      }
+    }
+
+    window.customElements.define(RateItem.is, RateItem);
+  </script>
+</dom-module>

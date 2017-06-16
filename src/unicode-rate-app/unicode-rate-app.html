@@ -1,0 +1,128 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+<link rel="import" href="../rate-item/rate-item.html">
+
+<dom-module id="unicode-rate-app">
+  <template>
+    <style>
+      :host {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .avarage-avatar {
+        font-size: 50px;
+        line-height: 70px;
+      }
+
+      .rate-items {
+        display: flex;
+        color: #EDE7F6;
+        user-select: none;
+      }
+
+      .total-rates {
+        color: #B39DDB;
+        text-transform: uppercase;
+        font: 14px/70px verdana, arial, sans-serif;
+      }
+    </style>
+
+    <div class="avarage-avatar">[[avarageRate]]</div>
+    <div class="rate-items">
+      <template is="dom-repeat" items="[[items]]" itemsIndexAs="itemIndex">
+        <rate-item 
+          is-selected="[[calcActive(index, rateValue)]]"
+          on-do-rate="_itemTapped"
+        >
+        </rate-item>
+      </template>
+    </div>
+    <div class="total-rates">Voted: [[totalRates]]</div>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class UnicodeRateApp extends Polymer.GestureEventListeners(Polymer.Element) {
+      static get is() { return 'unicode-rate-app'; }
+      static get properties() {
+        return {
+          items: {
+            type: Array,
+            value() { return []; }
+          },
+          itemsCount: {
+            type: Number,
+            value: 5
+          },
+          rateValue: {
+            type: Number,
+            value: 0
+          },
+          avarageRate: {
+            type: String,
+            computed: "_getEmojiByRate(rateValue)"
+          },
+          totalRates: {
+            type: Number,
+            value: 0
+          }
+        };
+      }
+
+      ready() {
+        super.ready();
+
+        this._rateSum = 0;
+
+        // var config = {
+        //   apiKey: "AIzaSyBUdeejXHEpbbim6m7roUGLcTE7X_MLNvQ",
+        //   databaseURL: "https://unicode-rate.firebaseio.com",
+        //   projectId: "unicode-rate"
+        // };
+
+        // firebase.initializeApp(config);
+
+        // this._votesRef = firebase.database().ref("votes");
+
+        // this._votesRef.on("child_added", snap => {
+        //   const value = snap.val();
+
+        //   if(value === null) return;
+
+        //   this._rateSum += value;
+
+        //   this.set("totalRates", this.totalRates + 1);
+        //   this.set("rateValue", Math.round(this._rateSum / this.totalRates));
+        // });
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        this.set("items", (new Array(this.itemsCount)).fill(0));
+      }
+
+      _itemTapped({ model: { index } }) {
+        this.set("rateValue", index + 1);
+        this.set("totalRates", this.totalRates + 1);
+        // this._votesRef.push(index + 1);
+      }
+
+      calcActive(index, rateValue) {
+        return index + 1 <= rateValue;
+      }
+
+      _getEmojiByRate(rateValue) {
+        return ["😶", "😱", "😭", "😢", "😧", "🙁", "😐", "🙄", "🙂", "🤗", "😍"][rateValue];
+      }
+    }
+
+    window.customElements.define(UnicodeRateApp.is, UnicodeRateApp);
+  </script>
+</dom-module>

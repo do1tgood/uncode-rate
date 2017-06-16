@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>rate-item test</title>
+
+    <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../bower_components/web-component-tester/browser.js"></script>
+
+    <link rel="import" href="../../src/rate-item/rate-item.html">
+  </head>
+  <body>
+
+    <test-fixture id="BasicTestFixture">
+      <template>
+        <rate-item></rate-item>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="ChangedPropertyTestFixture">
+      <template>
+        <rate-item
+          is-selected
+          rate-index="2"
+          selected-icon="🌕"
+          unselected-icon="🌑"
+        >
+        </rate-item>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('rate-item', function() {
+
+        test('instantiating the element with default properties works', function() {
+          const element = fixture('BasicTestFixture');
+          const elementShadowRoot = element.shadowRoot;
+          const elementHeader = elementShadowRoot.querySelector('span');
+
+          assert.equal(element.rateIndex, 0);
+          assert.equal(element.selectedIcon, "★");
+          assert.equal(element.unselectedIcon, "☆");
+          assert.equal(element.isSelected, false);
+          assert.equal(element.icon, "☆");
+          assert.equal(elementHeader.textContent, '☆');
+        });
+
+        test('setting a property on the element works', function() {
+          const element = fixture('ChangedPropertyTestFixture');
+          const elementShadowRoot = element.shadowRoot;
+          const elementHeader = elementShadowRoot.querySelector('span');
+
+          assert.equal(element.rateIndex, 2);
+          assert.equal(element.selectedIcon, "🌕");
+          assert.equal(element.unselectedIcon, "🌑");
+          assert.equal(element.isSelected, true);
+          assert.equal(element.icon, "🌕");
+          assert.equal(elementHeader.textContent, '🌕');
+        });
+
+        test('fires an event', function(done) {
+          const element = fixture('ChangedPropertyTestFixture');
+          const ev = new MouseEvent("click");
+
+          element.addEventListener('do-rate', function(event) {
+            assert.equal(event.detail.rateIndex, 2);
+            done();
+          });
+
+          element.dispatchEvent(ev);
+        });
+
+        test('icon computes correctly', function() {
+          const element = fixture('ChangedPropertyTestFixture');
+
+          element.isSelected = false;
+
+          const elementShadowRoot = element.shadowRoot;
+          const elementHeader = elementShadowRoot.querySelector('span');
+
+          assert.equal(elementHeader.textContent, '🌑');
+        });
+
+      });
+    </script>
+
+  </body>
+</html>
